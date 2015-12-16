@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript" src="./base.js"></script>
+    <script type="text/javascript">
+
+    //定义命名对象
+    base.Namespace.define("testnamespace", {
+        location: {
+            get: function() {
+                return this.xx;
+            }
+        },
+        xx: {
+            get: function(){
+                return "xx"
+            }
+        }
+    });
+    console.log(base.testnamespace.location);
+
+    //定义类
+    var testClass = base.Class.define(function(){
+        this.xx = "xx";
+    }, {
+        location: {
+            get: function() {
+                return this.xx;
+            }
+        },
+    });
+
+    var item = new testClass();
+    console.log(item.location)
+
+    // 定义具有继承关系的类
+    var testClass2 = base.Class.derive(testClass,function(){
+        this.xx = "xx";
+    }, {});
+
+    var item2 = new testClass2();
+    console.log(item2)
+    console.log(item2.location)
+    
+    </script>
+</body>
+</html>

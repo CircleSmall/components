@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+    html,
+    body {
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+        background: #fdfdfc;
+        overflow: hidden;
+    }
+
+    div {
+        margin: 0px;
+        padding: 0px;
+    }
+    
+    .contentWrapper {
+        float: left;
+        width: 80%;
+        height: 100%;
+        background-color: #ccc;
+    }
+    
+    .queueView {
+        overflow: hidden;
+        background: #eed4bb;
+        height: 100%;
+    }
+
+    .queueViewItem {
+        float: left;
+        width: 100%;
+        height: 50%;
+    }
+
+    .panelWrapper {
+        height: calc(100% - 123px);
+        background-color: #DDD4D4;
+    }
+    
+    .panel {
+        display: none;
+        padding: 20px;
+        height: 100%;
+    }
+    
+    .header {
+        padding: 20px;
+    }
+    </style>
+</head>
+
+<body>
+
+    <div class="contentWrapper">
+        <div class="header">
+            <label>方向：</label>
+            <button id="prev">后退</button>
+            <button id="next">前进</button>
+        </div>
+        <div class="header">
+            <label>view : </label>
+            <button id="dictBtn">dict</button>
+            <button id="transBtn">trans</button>
+            <button id="settingBtn">setting</button>
+        </div>
+        <div class="panelWrapper">
+            <div id="dictPanel" class="panel">dictPanel</div>
+            <div id="transPanel" class="panel">transPanel</div>
+            <div id="settingPanel" class="panel">settingPanel</div>
+        </div>
+    </div>
+
+    <div class="queueView">
+        <div class="queueViewItem">
+            <label>backStack队列</label>
+            <div id="backStack"></div>
+        </div>
+        <div class="queueViewItem">
+            <label>forwardStack队列</label>
+            <div id="forwardStack"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="./navigation.js"></script>
+    <script type="text/javascript" src="./register.js"></script>
+    <script type="text/javascript" src="./index.js"></script>
+    <script type="text/javascript">
+
+    function show(view) {
+        switch (view) {
+            case "dict":
+                navigation.navigate("dict");
+                break;
+            case "trans":
+                navigation.navigate("trans");
+                break;
+            case "setting":
+                navigation.navigate("setting");
+                break;
+        }
+
+    }
+
+    document.getElementById("next").onclick = function() {
+        navigation.forward();
+    }
+    document.getElementById("prev").onclick = function() {
+        navigation.back();
+    }
+
+    document.getElementById("dictBtn").onclick = function() {
+        show("dict");
+    }
+
+    document.getElementById("transBtn").onclick = function() {
+        show("trans");
+    }
+
+    document.getElementById("settingBtn").onclick = function() {
+        show("setting");
+    }
+    </script>
+</body>
+
+</html>

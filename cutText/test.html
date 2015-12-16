@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>页面标题</title>
+    <style>
+    div,
+    p,
+    a {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .mod-person {
+        margin-top: 4%;
+        padding-bottom: 4%;
+    }
+    
+    .mod-person a {
+        display: block;
+        color: #666;
+        border-bottom: 1px solid red;
+        overflow: hidden;
+    }
+    
+    .mod-person .mod-desc {
+        display: inline-block;
+        margin-left: 10px;
+        width: 64%;
+    }
+    
+    .mod-person .mod-desc .name {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
+        color: #333;
+    }
+    
+    .mod-person .mod-desc .desc {
+        overflow: hidden;
+        width: 100%;
+        margin-top: 2%;
+        color: #999;
+        font-size: 12px;
+        line-height: 150%;
+        word-wrap: break-word;
+    }
+    
+    .mod-person:last-child {
+        border-bottom: none;
+    }
+    
+    img.person-img {
+        float: left;
+        width: 30%;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="mod-person">
+        <a href="http://m.youdao.com/singledict?dict=baike_detail&amp;q=张琳芃&amp;more=true&amp;le=eng"> <img src="http://oimageb8.ydstatic.com/image?id=4210865090674557336&amp;product=xue" class="person-img">
+            <div class="mod-desc">
+                <p class="name">张琳芃张琳芃张琳芃张琳芃张琳芃张琳芃张琳芃</p>
+                <p class="desc" id="pp">铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突本场比赛飞身爆铲引冲突厉害厉害</p>
+            </div>
+        </a>
+    </div>
+    <script src="test.js"></script>
+    <script>
+    var dom = document.getElementById("pp");
+    if (!cutText.host["relative"]) {
+        cutText.register({
+            name: "relative",
+            style: {
+                width: "255px",
+                "font-size": "12px",
+                "line-height": "150%"
+                    //width: (window.innerWidth * 0.58 ) + "px"
+            }
+
+        });
+    }
+    console.log( xx = new Date().getTime());
+    dom.innerHTML = cutText.cut({
+        content: dom.innerHTML,
+        lines: 2,
+        host: "relative"
+    })
+    console.log((new Date().getTime()) - xx);
+    </script>
+</body>
+
+</html>
