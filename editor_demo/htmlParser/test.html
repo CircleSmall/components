@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+    var UE = {};
+    var domUtils = {};
+    var dom = {};
+    domUtils.fillChar = '\u200B';
+
+    </script>
+    <script type="text/javascript" src="./browser.js"></script>
+    <script type="text/javascript" src="./utils.js"></script>
+    <script type="text/javascript" src="./dtd.js"></script>
+    <script type="text/javascript" src="./node.js"></script>
+    <script type="text/javascript" src="./htmlparser.js"></script>
+    
+    <script type="text/javascript">
+    var html = '<div id="wrapper"> ' + //
+                    '<span class="inner span_one">span_one_text</span>' +  //
+                    '<span class="inner span_two" style="font-size:15px;">span_two_text</span>' +  //
+                '</div>';//
+    var wrapper = htmlparser(html).firstChild();
+
+    console.log(wrapper);
+
+    console.log(wrapper,wrapper.firstChild(),wrapper.lastChild());
+    console.log(wrapper.firstChild().nextSibling());
+    wrapper.appendChild(htmlparser('<span class="inner span_three">span_three_text</span>').firstChild())
+    console.log(wrapper);
+    
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>editor_demo</title>
+    <style type="text/css">
+    .wrapper {
+        width: 300px;
+        margin: 10px auto;
+    }
+    
+    #toolbar {
+        margin: 20px;
+    }
+    
+    #content {
+        min-width: 300px;
+        min-height: 200px;
+        background: #ffe;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div id="toolbar">
+            <select id="select">
+                <option value="14">14</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+        <div id="content" contenteditable="true">
+        </div>
+    </div>
+    <script type="text/javascript">
+    var select = document.getElementById("select");
+    var selection = window.getSelection();
+    select.onchange = function() {
+        var value = select.value;
+        var range = selection.getRangeAt(0);
+        applyInlineStyle(range, 'span', {
+                'style': "font-size" + ':' + value + 'px'
+            })
+            // range.applyInlineStyle('span', {
+            //     'style': "font-size" + ':' + value + 'px'
+            // });
+    }
+
+    function applyInlineStyle(range, tag, attr) {
+        var start = range.startContainer.parentNode;
+        var startOffset = range.startOffset;
+        var end = range.endContainer.parentNode;
+        var endOffset = range.endOffset;
+
+        addStyle(start, startOffset, tag, attr);
+        var current = start;
+        while (current.nextElementSibling != end) {
+            current = current.nextElementSibling;
+            // if (++count > 10) {
+            //     break;
+            // }
+            addStyle(current, 0, tag, attr);
+        }
+        addStyle(end, endOffset, tag, attr, true);
+    }
+
+    function addStyle(node, offset, tag, attr, end) {
+        var style = '  style="' + attr.style + '"'
+        var old = node.innerHTML;
+        var offset = offset || 0;
+        var result;
+        if (end) {
+            result = '<' + tag + style + '>' + //
+                old.slice(0, offset) + //
+                '</' + tag + '>' + //
+                old.slice(offset) //
+        } else {
+            result = old.slice(0, offset) + //
+                '<' + tag + style + '>' + //
+                old.slice(offset) + //
+                '</' + tag + '>'
+        }
+        node.innerHTML = result;
+    }
+    </script>
+</body>
+
+</html>
