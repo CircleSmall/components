@@ -1,3 +1,5 @@
+```
+
 /**
  * 一个对象 var ob = observer(obj)(如果是一个多层嵌套对象,则无限递归下去)
  * 给obj设置get set (如果该对象本来就有get\set 则再包一层)
@@ -51,3 +53,7 @@ new Watcher(vm, () => {
     vm._update(vm._render())
     // console.log("xx")
 }, () => {})
+
+
+
+```
