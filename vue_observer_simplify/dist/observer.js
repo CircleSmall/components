@@ -165,6 +165,9 @@ Dep.prototype.notify = function notify () {
   }
 };
 
+// the current target watcher being evaluated.
+// this is globally unique because there could be only one
+// watcher being evaluated at any time.
 Dep.target = null;
 var targetStack = [];
 
@@ -412,6 +415,7 @@ function dependArray (value) {
 
 /*  */
 
+// import { queueWatcher } from './scheduler'
 var uid$1 = 0;
 
 /**
@@ -612,6 +616,11 @@ Watcher.prototype.teardown = function teardown () {
   }
 };
 
+/**
+ * Recursively traverse an object to evoke all converted
+ * getters, so that every nested property inside the object
+ * is collected as a "deep" dependency.
+ */
 var seenObjects = new _Set();
 function traverse (val, seen) {
   var i, keys;
@@ -684,8 +693,8 @@ new Watcher(vm, function () {
 }, function () {});
 
 new Watcher(vm, function () {
-    vm._update(vm._render());
-    // console.log("xx")
+    console.log('call vm get method : ' + vm.key);
+    console.log('second watcher instance');
 }, function () {});
 
 })));

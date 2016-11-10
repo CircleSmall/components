@@ -48,6 +48,6 @@ new Watcher(vm, () => {
 }, () => {})
 
 new Watcher(vm, () => {
-    vm._update(vm._render())
-    // console.log("xx")
+    console.log('call vm get method : ' + vm.key);
+    console.log('second watcher instance')
 }, () => {})
