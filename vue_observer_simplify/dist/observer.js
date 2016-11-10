@@ -165,6 +165,9 @@ Dep.prototype.notify = function notify () {
   }
 };
 
+// the current target watcher being evaluated.
+// this is globally unique because there could be only one
+// watcher being evaluated at any time.
 Dep.target = null;
 var targetStack = [];
 
@@ -412,6 +415,7 @@ function dependArray (value) {
 
 /*  */
 
+// import { queueWatcher } from './scheduler'
 var uid$1 = 0;
 
 /**
@@ -527,15 +531,17 @@ Watcher.prototype.update = function update () {
   } else if (this.sync) {
     this.run();
   } else {
-    console.log("queuewatcher");
+    // console.log("queuewatcher")
+    console.log('queuewatcher : watch run');
+    this.run();
     // queueWatcher(this)
-  }
-};
+    }
+  };
 
-/**
- * Scheduler job interface.
+  /**
+   * Scheduler job interface.
  * Will be called by the scheduler.
-   */
+ */
 Watcher.prototype.run = function run () {
   if (this.active) {
     var value = this.get();
@@ -610,6 +616,11 @@ Watcher.prototype.teardown = function teardown () {
   }
 };
 
+/**
+ * Recursively traverse an object to evoke all converted
+ * getters, so that every nested property inside the object
+ * is collected as a "deep" dependency.
+ */
 var seenObjects = new _Set();
 function traverse (val, seen) {
   var i, keys;
@@ -646,10 +657,10 @@ window.vm = {
     "key": "value",
     "_watchers": [],
     "_render": function () {
-        console.log('call vm data : ' + this.key);
+        console.log('_render : call vm data : ' + this.key);
     },
     "_update": function () {
-        console.log('render');
+        console.log('_update');
     }
 };
 

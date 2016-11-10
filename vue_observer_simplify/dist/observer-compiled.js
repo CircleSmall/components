@@ -489,15 +489,17 @@
     } else if (this.sync) {
       this.run();
     } else {
-      console.log("queuewatcher");
+      // console.log("queuewatcher")
+      console.log('queuewatcher : watch run');
+      this.run();
       // queueWatcher(this)
     }
   };
 
   /**
    * Scheduler job interface.
-   * Will be called by the scheduler.
-     */
+  * Will be called by the scheduler.
+  */
   Watcher.prototype.run = function run() {
     if (this.active) {
       var value = this.get();
@@ -606,10 +608,10 @@
     "key": "value",
     "_watchers": [],
     "_render": function () {
-      console.log('call vm data : ' + this.key);
+      console.log('_render : call vm data : ' + this.key);
     },
     "_update": function () {
-      console.log('render');
+      console.log('_update');
     }
   };
 

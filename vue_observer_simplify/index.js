@@ -9,10 +9,10 @@ window.vm = {
     "key": "value",
     "_watchers": [],
     "_render": function () {
-        console.log('call vm data : ' + this.key)
+        console.log('_render : call vm data : ' + this.key)
     },
     "_update": function () {
-        console.log('render')
+        console.log('_update')
     }
 }
 
@@ -21,5 +21,3 @@ observe(vm);
 new Watcher(vm, () => {
     vm._update(vm._render())
 }, () => {})
-
-

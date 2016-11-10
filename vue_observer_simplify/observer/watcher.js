@@ -139,7 +139,9 @@ export default class Watcher {
     } else if (this.sync) {
       this.run()
     } else {
-      console.log("queuewatcher")
+      // console.log("queuewatcher")
+      console.log('queuewatcher : watch run')
+      this.run();
       // queueWatcher(this)
     }
   }

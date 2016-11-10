@@ -20,7 +20,7 @@
     "rollup-plugin-flow-no-whitespace": "^1.0.0",
     "rollup-watch": "^2.5.0"
   },
-  "script": {
+  "scripts": {
     "dev": "TARGET=web-standalone-dev rollup -w -c config.js"
   }
 }
