@@ -1,0 +1,26 @@
+{
+  "name": "vue-observer-simplify",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "rollup -w -c build/config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CircleSmall/components"
+  },
+  "keywords": [
+    "vue",
+    "observer"
+  ],
+  "author": "CircleSmall",
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^0.36.1",
+    "rollup-plugin-buble": "^0.14.0",
+    "rollup-plugin-flow-no-whitespace": "^1.0.0",
+    "rollup-watch": "^2.5.0"
+  },
+  "script": {
+    "dev": "TARGET=web-standalone-dev rollup -w -c config.js"
+  }
+}
