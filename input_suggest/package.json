@@ -1,0 +1,21 @@
+{
+  "name": "inputsuggest",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "TARGET=web-standalone-dev rollup -w -c rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CircleSmall/components"
+  },
+  "keywords": [
+    "input",
+    "suggest"
+  ],
+  "author": "CircleSmall",
+  "devDependencies": {
+    "rollup": "^0.36.1",
+    "rollup-plugin-buble": "^0.14.0",
+    "rollup-watch": "^2.5.0"
+  }
+}
