@@ -19,6 +19,20 @@ let current = {
     book: ''
 };
 
+
+const guide = {
+    getData: (inputUtilObj) => {
+        return new Promise(function (resolve, reject) {
+            let list = ['ss', 'sdf', 'wer', '23rs'];
+            resolve(list)
+        })
+    },
+    mark: 'guides',
+    suggestPosition: '',
+    after: () => ' >',
+    before: () => '',
+};
+
 const users = {
     getData: (inputUtilObj) => {
         return new Promise(function (resolve, reject) {
@@ -82,7 +96,7 @@ const chapters = {
     before: () => 'chapters: '
 };
 
-const list = [users, books, chapters];
+const list = [guide, users, books, chapters];
 
 const oneDataTest = users;
 

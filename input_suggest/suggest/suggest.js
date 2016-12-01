@@ -151,9 +151,9 @@ class Suggest {
 
         function updateListViewTimerHandler() {
             const value = me.getStrBeforeCursor(); //得到光标之前的字符串
-            const rect = me.resetCurrentCursorRect(value);//得到光标位置对象
             const parseResult = me.resetParseResult(me.$input.val(), value.length);//解析字符串
             me.resetCurrentMark(parseResult);//根据字符串设置currentMark, cachestr 等值
+            const rect = me.resetCurrentCursorRect(value);//得到光标位置对象
             me.refreshListView(); //根据currentMark 请求数据, 刷新listview
         }
     }
@@ -303,9 +303,9 @@ class Suggest {
         }
         if (this.currentMark) {
             //根据当前mark去getdata
-            this.makeDataObj[this.currentMark.markName](this.inputUtilObj).then((data) => {
+            this.makeDataObj[this.currentMark.markName](this.inputUtilObj).then((data, template) => {
                 //刷新listview
-                this.listView.refresh(data);
+                this.listView.refresh(data, template);
             });
         }
     }
@@ -448,7 +448,7 @@ class Suggest {
         if (this.currentMark && this.currentMark.suggestPosition !== 'auto') {
             result = {
                 x: $inputOffset.left + 'px',
-                y: $inputOffset.top + 'px'
+                y: $inputOffset.top + this.$input[0].offsetHeight + 'px'
             }
         } else if (!value) {
             result = {
