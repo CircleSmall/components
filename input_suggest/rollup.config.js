@@ -19,7 +19,7 @@ function genConfig(opts) {
         plugins: [
             buble()
         ],
-        sourceMap: 'inline'
+        // sourceMap: 'inline'
     };
 
     return config

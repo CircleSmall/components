@@ -137,16 +137,19 @@ class ListView {
 
     hide() {
         this.$el.hide();
+        this.display = 'hide';
         return this;
     }
 
     show() {
         this.$el.show();
+        this.display = 'show';
         return this;
     }
 
     remove() {
         this.$el.remove();
+        this.display = 'remove';
         return this;
     }
 }

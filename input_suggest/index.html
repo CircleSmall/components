@@ -7,6 +7,7 @@
         ul li:hover {
             background: #ccc;
         }
+
         ul li.selected {
             background: #ccc;
         }
@@ -14,12 +15,12 @@
         .input-wrapper {
             border: 1px solid #eaeefb;
             border-radius: 4px;
-            padding: 24px;
             margin: 0 auto;
             width: 500px;
+            position: relative;
         }
 
-        input {
+        .input {
             display: block;
             padding: 3px 10px;
             box-sizing: border-box;
@@ -30,17 +31,51 @@
             background-image: none;
             border: 1px solid #c0ccda;
             border-radius: 4px;
-            transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+            transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
             outline: none;
             font-size: inherit;
             line-height: normal;
+        }
+
+        .input.get-pos {
+            width: auto;
+            padding-right: 0;
+        }
+
+        .list {
+            position: fixed;
+            border: 1px solid #1f2d3d;
+            margin: 0;
+        }
+
+        .get-pos {
+            display: none;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            padding: 3px 10px;
+            width: 500px;
+            height: 36px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .demo2 {
+            margin-top: 300px;
         }
     </style>
 </head>
 <body>
 
-<div class="input-wrapper">
+<div class="input-wrapper demo1">
     <input type="text" class="input">
+    <input class="get-pos input">
+    <ul class="list"></ul>
+</div>
+
+<div class="input-wrapper demo2">
+    <input type="text" class="input">
+    <input class="get-pos input">
     <ul class="list"></ul>
 </div>
 

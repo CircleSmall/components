@@ -20,11 +20,15 @@ let current = {
 };
 
 const users = {
-    getData: () => {
+    getData: (inputUtilObj) => {
         return new Promise(function (resolve, reject) {
             let list = [];
             for (let i in data) {
-                list.push(i);
+                if (inputUtilObj.isComplete) {
+                    list.push(i);
+                } else if (i.indexOf(inputUtilObj.inputStr) > -1) {
+                    list.push(i);
+                }
             }
             resolve(list)
         })
@@ -32,16 +36,21 @@ const users = {
     mark: 'users',
     suggestPosition: 'auto',
     after: () => ' >',
-    before: () => 'users: '
+    before: () => 'users: ',
+    mutiple: true
 };
 
 const books = {
-    getData: () => {
+    getData: (inputUtilObj = {}) => {
         return new Promise(function (resolve, reject) {
             if (current.user) {
                 let list = [];
                 for (let i in data[current.user]) {
-                    list.push(i);
+                    if (inputUtilObj.isComplete) {
+                        list.push(i);
+                    } else if (i.indexOf(inputUtilObj.inputStr) > -1) {
+                        list.push(i);
+                    }
                 }
                 resolve(list)
             }
@@ -75,4 +84,6 @@ const chapters = {
 
 const list = [users, books, chapters];
 
-export default {current, list}
+const oneDataTest = users;
+
+export default {current, list, oneDataTest}
