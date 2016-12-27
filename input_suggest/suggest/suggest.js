@@ -1,4 +1,5 @@
 import listView from './listView';
+import getCaretCoordinates from'./textarea_caret';
 
 const keyCode = {
     'ESC': 27,
@@ -12,29 +13,25 @@ class Suggest {
     constructor($inputWrapper, dataConfig) {
         this.$el = $inputWrapper;
         this.$input = $inputWrapper.find('.input');
-        this.$getPosInput = $inputWrapper.find('.get-pos');//用于定位listview 的辅助input
+        this.$getPosInput = $inputWrapper.find('.input-pos-help');//用于定位listview 的辅助input
         this.listView = new listView({
-            $el: $inputWrapper.find('.list')
+            $el: $inputWrapper.find('.ui-autocomplete')
         });
-        this.dataConfig = dataConfig;
-        this.makeDataObj = {}; //生成数据的map对象
-        this.marks = []; //marks数组
-        // this.mutiple = false;
-        // this.tokenQueue = [];
+        // this.dataConfig = dataConfig || [];
+        // this.makeDataObj = {}; //生成数据的map对象
+        // this.marks = []; //marks数组
         this.init();
+        this.updateConfig(dataConfig);
     }
 
     init() {
         this.initEvent();
-        this.parseDataConfig();
     }
 
     initEvent() {
         let me = this;
-        this.$el.on('keyup', this.$input, function ($e) {
-            me._keyupHandler($e);
-            return false;
-        });
+
+        this.$input.on('keydown', $.proxy(this._keyDownHandler, this));
 
         this.$input.on('click', function () {
             me.updateListView();
@@ -45,33 +42,20 @@ class Suggest {
             me.listView.hide();
         });
 
-        $('body').on('keyup', function (e) {
-            if (me.listView.display !== 'show') {
-                return false;
-            }
-            switch (e.keyCode) {
-                case keyCode.UP :
-                    me.listView.index--;
-                    break;
-                case keyCode.DOWN:
-                    me.listView.index++;
-                    break;
-                case keyCode.ENTER:
-                    me.selectListViewItem(me.listView.value);
-                    me.listView.hide();
-                    break;
-                case keyCode.ESC:
-                    me.listView.hide();
-                    break;
-                default:
-                    break;
-            }
-            return false;
-        });
-
         $(this.listView).on('selectItem', () => {
-            this.selectListViewItem(this.listView.value);
+            let value = this.listView.value;
+            if(this.listView.currentItemIsReplace) {
+                this.currentMark.replaceValue = value;
+            }
+            this.selectListViewItem(value);
         });
+    }
+
+    updateConfig(dataConfig) {
+        this.marks = [];
+        this.makeDataObj = {};
+        this.dataConfig = dataConfig;
+        this.parseDataConfig();
     }
 
     parseDataConfig() {
@@ -83,11 +67,6 @@ class Suggest {
         } else if (this.dataConfig.constructor == Object) {
             this.parseDataItem(this.dataConfig);
         }
-
-        // //如果只有一种mark, 且mutiple为true
-        // if (this.marks.length == 1 && this.marks[0].mutiple) {
-        //     this.mutiple = true;
-        // }
     }
 
     parseDataItem(item) {
@@ -97,14 +76,12 @@ class Suggest {
             str: '',
             markName: markName,
             suggestPosition: item.suggestPosition,
-            after: item.after || function () {
-                return ''
-            },
-            before: item.before || function () {
-                return ''
-            },
+            renderAfter: item.renderAfter,
+            renderBefore: item.renderBefore,
             next: false,
-            mutiple: item.mutiple
+            renderReplaceValue: item.renderReplaceValue,
+            replaceValue:'',
+            jumpCurrent: item.jumpCurrent
         });
         this.makeDataObj[markName] = item.getData;
     }
@@ -117,26 +94,29 @@ class Suggest {
         mark.next = false;
     }
 
-    _keyupHandler(e) {
+    _keyDownHandler(e) {
         switch (e.keyCode) {
             case keyCode.UP :
-                this.$input.blur();
+                e.preventDefault();
                 this.listView.index--;
+                break;
             case keyCode.DOWN:
-                this.$input.blur();
+                e.preventDefault();
                 this.listView.index++;
                 break;
             case keyCode.ENTER:
-                this.$input.blur();
+                e.preventDefault();
+                this.selectListViewItem(this.listView.value);
+                this.listView.hide();
                 break;
             case keyCode.ESC:
-                this.$input.blur();
+                e.preventDefault();
+                this.listView.hide();
                 break;
             default:
                 this.updateListView();
                 break;
         }
-        return false;
     }
 
     updateListView() {
@@ -150,63 +130,20 @@ class Suggest {
         }, 100);
 
         function updateListViewTimerHandler() {
-            const value = me.getStrBeforeCursor(); //得到光标之前的字符串
+            let value = me.getStrBeforeCursor(); //得到光标之前的字符串
             const parseResult = me.resetParseResult(me.$input.val(), value.length);//解析字符串
             me.resetCurrentMark(parseResult);//根据字符串设置currentMark, cachestr 等值
-            const rect = me.resetCurrentCursorRect(value);//得到光标位置对象
+            value = me.getStrBeforeCursor();//光标位置有可能会变化
+            me.resetCurrentCursorRect(value);//得到光标位置对象
             me.refreshListView(); //根据currentMark 请求数据, 刷新listview
         }
     }
-
-    // getKeyWordsByPos() {
-    //     const pos = this.getCursortPosition();
-    //     const text = this.$input.val();
-    //
-    //     let findTarget = false; //是否找到目标
-    //     let range_left = -1; //左面空格的位置
-    //     let range_right = -1; //右面空格的位置
-    //
-    //     for (let l = text.length - 1; l > pos; l--) {
-    //         if (text.charCodeAt(j) == 32) {
-    //             //从右向左扫描到空格
-    //             range_right = l;
-    //         }
-    //     }
-    //
-    //     for (let i = 0; i < pos; i++) {
-    //         if (text.charCodeAt(i) == 32) {
-    //             //从左向右扫描到空格
-    //             range_left = i;
-    //         }
-    //     }
-    //
-    //     if (range_left == -1) {
-    //         range_left = 0;
-    //     }
-    //
-    //     if (range_right == -1) {
-    //         range_right = text.length;
-    //     }
-    //
-    //     return {
-    //         words: text.slice(range_left, range_right),
-    //         left: range_left,
-    //         right: range_right
-    //     }
-    //
-    // }
-
-    // updateListViewAtMutiple() {
-    //     const value = this.$input.val();
-    //     //得到位置, 判断位置在哪一个token里
-    //     const token = this.getTokenByCursor();
-    // }
 
     _filterRarseResult(parseResult) {
         var result = [];
         for (let i = 0, l = parseResult.length; i < l; i++) {
             if (parseResult[i].type == 'mark') {
-                result.push(parseResult[i])
+                result.push(parseResult[i]);
             }
         }
         return result;
@@ -217,7 +154,6 @@ class Suggest {
         this.strCache = '';
         this.inputUtilObj = {};
         let markPos = -1;
-        let next = false;
         let me = this;
 
         /***
@@ -255,6 +191,15 @@ class Suggest {
                 } else {
                     this.currentMark = this.marks[markPos + 1];//下一个mark 为当前mark
                     this.strCache = buildStrCache(markPos);
+                    let startStrRenderBefore = this.currentMark.renderBefore && this.currentMark.renderBefore.addStrAtStart();
+                    if (startStrRenderBefore) {
+                        if (parseResult[markPos + 1] && parseResult[markPos + 1].str.indexOf(startStrRenderBefore) == 0) {
+                        } else if (!parseResult[markPos + 1]) {
+                            let start = this.currentMark.renderBefore.addStrAtStart();
+                            let cacheStr = (parseResult[markPos + 1] && parseResult[markPos + 1].str) || '';
+                            this.$input.val(this.strCache + ' ' + start + cacheStr);
+                        }
+                    }
                 }
 
             } else {
@@ -277,12 +222,9 @@ class Suggest {
         //inputStr 为搜索需要的字符串
         if (parseResult.length > 0 && parseResult[parseResult.length - 1].type == 'unmark') {
             let str = parseResult[parseResult.length - 1].str;
-            if (str.indexOf(this.currentMark.before()) == 0) {
-                str = str.slice(this.currentMark.before().length);
-            }
-            this.inputUtilObj.inputStr = str;
+            this.inputUtilObj.inputStr = this.getMarkStrExceptExternalStr(str, this.currentMark);
         } else {
-            this.inputUtilObj.inputStr = "";
+            this.inputUtilObj.inputStr = '';
         }
 
         function buildStrCache(l) {
@@ -299,13 +241,17 @@ class Suggest {
             this.listView.$el.css({
                 left: this.currentCursorRect.x,
                 top: this.currentCursorRect.y
-            })
+            });
         }
         if (this.currentMark) {
             //根据当前mark去getdata
             this.makeDataObj[this.currentMark.markName](this.inputUtilObj).then((data, template) => {
                 //刷新listview
-                this.listView.refresh(data, template);
+                if (data.length !== 0) {
+                    this.listView.refresh(data, template).show();
+                } else {
+                    this.listView.hide();
+                }
             });
         }
     }
@@ -333,6 +279,7 @@ class Suggest {
      *           (不匹配mark 的字符 , 一律视为unmark)
      * */
     resetParseResult(str, pos) {
+        let marks = $.extend(true, [], this.marks);
         let result = [];
         let count = 0;
         for (let i = 0, l = str.length; i < l; i) { //count 是为了防止程序错误,导致for的死循环
@@ -346,58 +293,101 @@ class Suggest {
                     result[result.length - 1]['next'] = true;//next表示, 是否需要展示下一个mark
                 }
                 i++;
-                continue
+                continue;
             }
-            let isMarkStr = false;
-            for (let j in this.marks) {
-                let mark = this.marks[j];
-                //${mark.str}xxx 不算一个mark
-                let matchValue = i + mark.str.length === l ? mark.str : mark.str + ' ';
-                if (str.slice(i).indexOf(matchValue) === 0) {
-                    let obj = {
-                        markName: mark.markName,
-                        type: 'mark'
-                    };
+            // let isMarkStr = false;
 
-                    result.push(obj);
+            //chack by mark
+            let mark = marks[0];
+            let markStr = mark.str;
+            // for (let j in this.marks) {
+            //     let mark = this.marks[j];
 
-                    //如果在光标右边
-                    if (i + matchValue.length > pos) {
-                        obj.atPosRight = true
-                        return result;
-                    }
-                    i += mark.str.length;
-                    isMarkStr = true;
-                    break;
+            //${mark.str}xxx 不算一个mark
+            // if (mark.renderReplaceValue) { //比较replace值, 不比较origin值
+            //     markStr = mark.replaceValue || '';
+            // }
+            let matchValue = i + markStr.length === l ? markStr : markStr + ' ';
+            if (str.slice(i).indexOf(matchValue) === 0) {
+                let obj = {
+                    markName: mark.markName,
+                    type: 'mark'
+                };
+
+                result.push(obj);
+
+                //如果在光标右边
+                if (i + matchValue.length > pos) {
+                    obj.atPosRight = true;
+                    return this.currentParseResult = result;
                 }
-            }
-            if (!isMarkStr) {
-                let last = result[result.length - 1];
+
+                marks.splice(0, 1);//删除匹配成功的mark
+                i += markStr.length;
+                // isMarkStr = true;
+                // break;
+            } else {
+                //如果mark没有匹配成功, 则
+                result.push({
+                    type: 'unmark',
+                    str: str.slice(i)
+                });
+                // let last = result[result.length - 1];
                 // if (!last || last.type != 'unmark') {
                 //     result.push({
                 //         type: 'unmark',
-                //         str: s
-                //     })
-                // } else {
-                //     last.str += s;
+                //         str: str.slice(i)
+                //     });
                 // }
-                if (!last || last.type != 'unmark') {
-                    result.push({
-                        type: 'unmark',
-                        str: str.slice(i)
-                    })
-                }
-                // } else {
-                //     last.str += s;
-
-                // i++;
+                return this.currentParseResult = result;
             }
+            // }
+            // if (!isMarkStr) {
+            //     let last = result[result.length - 1];
+            //     if (!last || last.type != 'unmark') {
+            //         result.push({
+            //             type: 'unmark',
+            //             str: str.slice(i)
+            //         });
+            //     }
+            // }
         }
         return this.currentParseResult = result;
     }
 
+    //markstr 是不包括renderBefore.addStrAtStart 这个字符的
     makeMarkStr(mark) {
-        return mark.before() + mark.value + mark.after();
+        mark.renderAfterEndStr = '';
+        mark.renderAfterStartStr = '';
+
+        if (mark.renderAfter && mark.renderAfter.addStrAtStart) {
+            mark.renderAfterStartStr = mark.renderAfter.addStrAtStart();
+        }
+
+        if (mark.renderAfter && mark.renderAfter.addStrAtEnd) {
+            mark.renderAfterEndStr = mark.renderAfter.addStrAtEnd();
+        }
+
+        let value = mark.replaceValue || mark.value;
+
+        return mark.renderAfterStartStr + value + mark.renderAfterEndStr;
+    }
+
+    getMarkStrExceptExternalStr(str, mark) {
+        if (mark.renderBefore && mark.renderBefore.addStrAtStart) {
+            str = str.slice(mark.renderBefore.addStrAtStart.length);
+        }
+
+        let before = mark.renderAfterStartStr;
+        let after = mark.renderAfterEndStr;
+        if (before && str.indexOf(before) == 0) {
+            str = str.slice(before.length);
+        }
+        if (after && str.indexOf(after) == str.length - after.length) {
+            str = str.slice(0, str.length - after.length);
+        }
+
+        return str;
     }
 
     selectListViewItem(val) {
@@ -439,33 +429,55 @@ class Suggest {
     }
 
     getStrBeforeCursor() {
-        return this.$input.val().slice(0, this.getCursortPosition())
+        return this.$input.val().slice(0, this.getCursortPosition());
     }
 
     resetCurrentCursorRect(value) {
         let result = this.currentCursorRect = null;
         const $inputOffset = this.$input.offset();
+        const inputHeight = this.$input[0].offsetHeight;
         if (this.currentMark && this.currentMark.suggestPosition !== 'auto') {
             result = {
                 x: $inputOffset.left + 'px',
-                y: $inputOffset.top + this.$input[0].offsetHeight + 'px'
-            }
+                y: $inputOffset.top + inputHeight + 'px'
+            };
         } else if (!value) {
             result = {
                 x: $inputOffset.left + 'px',
-                y: $inputOffset.top + 'px'
-            }
+                y: $inputOffset.top + inputHeight + 'px'
+            };
         } else {
-            this.$getPosInput.val(value).show().attr('size', value.length);
-            const width = this.$getPosInput[0].clientWidth;
-            this.$getPosInput.hide();
-
+            const coordinates = getCaretCoordinates(this.$input[0], value.length);
             result = {
-                x: width + $inputOffset.left + 'px',
-                y: $inputOffset.top + 'px'
-            }
+                x: coordinates.left + $inputOffset.left,
+                y: coordinates.top + this._calculateLineHeight() + $inputOffset.top
+            };
         }
+
         return this.currentCursorRect = result;
+    }
+
+    _calculateLineHeight() {
+        if (this._calculateLineHeight) {
+            return this._calculateLineHeight;
+        }
+        let el = this.$input[0];
+        let lineHeight = parseInt($(el).css('line-height'), 10);
+        if (isNaN(lineHeight)) {
+            // http://stackoverflow.com/a/4515470/1297336
+            var parentNode = el.parentNode;
+            var temp = document.createElement(el.nodeName);
+            var style = el.style;
+            temp.setAttribute(
+                'style',
+                'margin:0px;padding:0px;font-family:' + style.fontFamily + ';font-size:' + style.fontSize
+            );
+            temp.innerHTML = 'test';
+            parentNode.appendChild(temp);
+            lineHeight = temp.clientHeight;
+            parentNode.removeChild(temp);
+        }
+        return this._calculateLineHeight = lineHeight;
     }
 }
 

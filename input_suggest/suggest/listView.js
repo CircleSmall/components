@@ -4,13 +4,17 @@ class ListView {
         this.$el = opts.$el || $('<ul></ul>');
         this.data = opts.data || [];
 
-        this.itemClassName = opts.itemClassName || 'item';
-        this.HOVER_CLASSNAME = 'selected';
+        this.itemClassName = opts.itemClassName || 'ui-menu-item';
+        this.HOVER_CLASSNAME = 'ui-state-focus';
 
         this.template = opts.template || function (data) {
                 let str = '';
                 for (let i = 0, l = data.length; i < l; i++) {
-                    str += `<li class="${this.itemClassName}" data-order="${i}">${data[i]}</li>`;
+                    if(data[i].constructor === Object) {
+                        str += `<li class="${this.itemClassName}" data-str="${data[i]['replace']}" isReplace="true" data-order="${i}"><a href="javascript:;">${data[i]['origin']}</a></li>`;
+                    } else {
+                        str += `<li class="${this.itemClassName}" data-order="${i}" data-str="${data[i]}"><a href="javascript:;">${data[i]}</a></li>`;
+                    }
                 }
                 return str;
             };
@@ -24,7 +28,7 @@ class ListView {
         if (val > this.data.length - 1) {
             val = this.data.length - 1;
         } else if (val < 0) {
-            val = -1
+            val = -1;
         }
         this.updateViewByIndex(this._index = val);
     }
@@ -42,7 +46,11 @@ class ListView {
     }
 
     get value() {
-        return this.getIndexItem().html();
+        return this.getIndexItem().attr('data-str');
+    }
+
+    get currentItemIsReplace() {
+        return this.getIndexItem().attr('isReplace')
     }
 
     $(selector) {
@@ -58,6 +66,9 @@ class ListView {
         let me = this;
         this.$el.on('click', '.' + this.itemClassName, function () {
             me._clickHandler($(this));
+        });
+        this.$el.on('mouseover', '.' + this.itemClassName, function () {
+            me._mouseoverHandler($(this));
         });
     }
 
@@ -78,6 +89,8 @@ class ListView {
         }
 
         this.render().show();
+
+        return this;
     }
 
     updateViewByIndex(index) {
@@ -125,6 +138,11 @@ class ListView {
         const tempIndex = +($item.attr('data-order'));
         this.index = tempIndex;
         $(this).trigger('selectItem');
+    }
+
+    _mouseoverHandler($item) {
+        this.getAllItems().removeClass(this.HOVER_CLASSNAME);
+        $item.addClass(this.HOVER_CLASSNAME);
     }
 
     getIndexItem() {

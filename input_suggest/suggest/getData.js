@@ -6,9 +6,9 @@ let chaptersNum = 6;
 for (let i in names) {
     let userObj = data[names[i]] = {};
     for (let j = 0; j < booksNum; j++) {
-        let bookObj = userObj[`${names[i]}_book_${j}`] = [];
+        let bookObj = userObj[`${names[i]} book ${j}`] = [];
         for (let k = 0; k < chaptersNum; k++) {
-            bookObj.push(`chapter_${k}`);
+            bookObj.push(`chapter ${k}`);
         }
     }
 }
@@ -20,17 +20,59 @@ let current = {
 };
 
 
+let test = false;
 const guide = {
     getData: (inputUtilObj) => {
         return new Promise(function (resolve, reject) {
-            let list = ['ss', 'sdf', 'wer', '23rs'];
+            let list = [];
+            if (test) {
+
+                list = [{
+                    origin: 'ee',
+                    replace: 'eA'
+                }, {
+                    origin: 'ff',
+                    replace: 'fB'
+                }, {
+                    origin: 'scc',
+                    replace: 'sCC'
+                }, {
+                    origin: 'd22d',
+                    replace: 'D4D'
+                }]
+                test = !test;
+            } else {
+                list = [{
+                    origin: 'aa',
+                    replace: 'AA'
+                }, {
+                    origin: 'bb',
+                    replace: 'BB'
+                }, {
+                    origin: 'cc',
+                    replace: 'CC'
+                }, {
+                    origin: 'dd',
+                    replace: 'DD'
+                }]
+
+                test = !test;
+
+            }
             resolve(list)
         })
     },
     mark: 'guides',
     suggestPosition: '',
-    after: () => ' >',
-    before: () => '',
+    renderAfter: {
+        addStrAtStart: () => '',
+        addStrAtEnd: () => ''
+    },
+    renderBefore: {
+        addStrAtStart: () => ''
+    },
+    renderReplaceValue: true,
+    // jumpCurrent: true
 };
 
 const users = {
@@ -49,8 +91,14 @@ const users = {
     },
     mark: 'users',
     suggestPosition: 'auto',
-    after: () => ' >',
-    before: () => 'users: ',
+
+    renderAfter: {
+        addStrAtStart: () => 'us: ',
+        addStrAtEnd: () => ' >'
+    },
+    renderBefore: {
+        addStrAtStart: () => 'users: '
+    },
     mutiple: true
 };
 
@@ -72,8 +120,13 @@ const books = {
     },
     mark: 'books',
     suggestPosition: 'auto',
-    after: () => ' >',
-    before: () => 'books: '
+    renderAfter: {
+        addStrAtStart: () => 'bks: ',
+        addStrAtEnd: () => ' >'
+    },
+    renderBefore: {
+        addStrAtStart: () => 'books: '
+    }
 };
 
 const chapters = {
@@ -91,9 +144,7 @@ const chapters = {
         })
     },
     mark: 'chapters',
-    suggestPosition: 'auto',
-    after: () => ' >',
-    before: () => 'chapters: '
+    suggestPosition: 'auto'
 };
 
 const list = [guide, users, books, chapters];

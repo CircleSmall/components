@@ -8,7 +8,7 @@
             background: #ccc;
         }
 
-        ul li.selected {
+        ul li.ui-state-focus {
             background: #ccc;
         }
 
@@ -43,17 +43,17 @@
             padding-right: 0;
         }
 
-        .list {
+        .ui-autocomplete {
             position: fixed;
             border: 1px solid #1f2d3d;
             margin: 0;
         }
 
         .get-pos {
-            display: none;
+            /*display: none;*/
             position: absolute;
             left: 0px;
-            top: 0px;
+            top: 50px;
             /*padding: 3px 10px;*/
             /*!*width: 500px;*!*/
             /*height: 36px;*/
@@ -70,17 +70,17 @@
 
 <div class="input-wrapper demo1">
     <input type="text" class="input">
-    <input class="get-pos input" hidden>
-    <ul class="list"></ul>
+    <ul class="ui-autocomplete"></ul>
 </div>
 
 <div class="input-wrapper demo2">
     <input type="text" class="input">
-    <input class="get-pos input">
     <ul class="list"></ul>
 </div>
 
-<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
+
+
+<script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
 <script src="./dist/suggest.js"></script>
 </body>
 </html>
