@@ -1,0 +1,79 @@
+@charset "utf-8";
+/*
+** Name:html校验
+** Author:冯胜清
+** Date:20131030
+*/
+
+section { display:block; }
+body,h1,h2,h3,p,textarea{
+	margin: 0;
+	padding: 0;
+}
+textarea{
+	resize: none;
+}
+
+html {
+	min-height: 100%;
+}
+body {
+	color:#444;
+	font: 14px/1.4 "ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Hiragino Sans GB","Hiragino Sans GB W3";
+	min-width:320px; 
+	min-height:100%; 
+	-webkit-text-size-adjust:none;
+}
+
+.y_hd {
+	margin: 20px 0;
+	height: 28px;
+	color: rgb(66, 139, 202);
+	text-align: center;
+}
+.mod_check{
+	display: block;
+	width: 80%;
+	margin: 20px auto;
+	text-align: center;
+}
+
+/*m-input*/
+.mod {
+	display: inline-block;
+	margin: 10px;
+	width: 47%;
+	*display: inline;
+	*zoom: 1;
+}
+.mod .input_html {
+	display: block;
+	width: 98%;
+	height: 350px;
+	/*padding: 1%;*/
+	
+	border:1px #DADADA solid;
+	color: #1a1a1a;
+	font-size:1.07142em;
+	background-color: #F9F9F9;
+}
+
+.action{
+	width: 30%;
+	margin: 20px auto;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+}
+/* m-btn */
+.btn{
+	display: block;
+	border: 1px solid #CFCFCF;
+	color: #428bca;
+	font-size: 1.5em;
+	cursor: pointer;
+}
+.btn:hover{
+	background: #428bca;
+	color: #fff;
+}

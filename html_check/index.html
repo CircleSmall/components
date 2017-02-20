@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>html校验</title>
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link href="./styles/check.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<!--html校验-->
+	<div class="page_check">
+		<!--顶部导航-->
+		<header class="y_hd">
+			<h1>简单的<span>html校验</span></h1>
+		</header>
+		<!--/顶部导航-->
+		<!--校验模块-->
+		<section class="mod_check">
+			<!--输入html-->
+			<div class="mod mod_input" id="mod_input">
+				<textarea type="text" class="input_html" id="input" placeholder="请输入html"></textarea>
+			</div>
+			<!--/输入html-->
+			
+			<!--输出校验结果-->
+			<div class="mod mod_output" id="mod_output">
+				<textarea type="text" class="input_html" id="output" placeholder="校验结果" readonly="readonly"></textarea>
+			</div>
+			<!--/输出校验结果-->
+			
+			
+		</section>
+		<!--/检验模块-->
+		<!--提交-->
+		<p class="action"><span class="btn">开始校验</span></p>
+		<!--/提交-->
+	</div>
+	<script type="text/javascript" src="./scripts/check.js"></script>
+	<script type="text/javascript" src="./scripts/main.js"></script>
+</body>
+</html>
