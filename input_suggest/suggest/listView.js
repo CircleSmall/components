@@ -9,17 +9,26 @@ class ListView {
 
         this.template = opts.template || function (data) {
                 let str = '';
+                if (data.length == 0) {
+                    return ' <strong class="no-result" style="font-weight: bold;">  no result.  </strong>';
+                }
                 for (let i = 0, l = data.length; i < l; i++) {
-                    if(data[i].constructor === Object) {
-                        str += `<li class="${this.itemClassName}" data-str="${data[i]['replace']}" isReplace="true" data-order="${i}"><a href="javascript:;">${data[i]['origin']}</a></li>`;
-                    } else {
-                        str += `<li class="${this.itemClassName}" data-order="${i}" data-str="${data[i]}"><a href="javascript:;">${data[i]}</a></li>`;
-                    }
+                    let item = this.parseDataItem(data[i]);
+                    str += `<li 
+                                class="${this.itemClassName}" 
+                                data-id="${item.id}" 
+                                data-origin="${item.origin}"
+                                data-value="${item.value}"
+                                data-is-replace="${item.isReplace}" 
+                                data-str="${item.datastr}" 
+                                data-order="${i}">
+                                    <a href="javascript:;">${item.value}</a>
+                            </li>`;
                 }
                 return str;
             };
 
-        this._index = -1;
+        this._index = 0;
 
         this.init();
     }
@@ -28,7 +37,7 @@ class ListView {
         if (val > this.data.length - 1) {
             val = this.data.length - 1;
         } else if (val < 0) {
-            val = -1;
+            val = 0;
         }
         this.updateViewByIndex(this._index = val);
     }
@@ -46,11 +55,24 @@ class ListView {
     }
 
     get value() {
-        return this.getIndexItem().attr('data-str');
+        let $currentItem = this.getIndexItem();
+        if ($currentItem.length == 0) {
+            return '';
+        }
+        return $currentItem.attr('data-value');
+    }
+
+    get currentItemData() {
+        let $currentItem = this.getIndexItem();
+        if ($currentItem.length == 0) {
+            return '';
+        }
+        let data = JSON.parse(decodeURIComponent($currentItem.attr('data-str')));
+        return data;
     }
 
     get currentItemIsReplace() {
-        return this.getIndexItem().attr('isReplace')
+        return this.getIndexItem().attr('data-is-replace') === 'true';
     }
 
     $(selector) {
@@ -67,30 +89,58 @@ class ListView {
         this.$el.on('click', '.' + this.itemClassName, function () {
             me._clickHandler($(this));
         });
-        this.$el.on('mouseover', '.' + this.itemClassName, function () {
-            me._mouseoverHandler($(this));
+        this.$el.on('click', '.no-result', function () {
+            me._clickHandler($(this));
         });
     }
 
     render() {
         this.$el.html(this.template(this.data));
+        this.getIndexItem().addClass(this.HOVER_CLASSNAME);
         return this;
     }
 
-    refresh(data, template) {
-        this.index = -1;
-
+    refresh(data, template, str) {
         if (data) {
             this.updateData(data);
+            if (data.length == 0) {
+                this.noResult = true;
+            } else {
+                this.noResult = false;
+            }
         }
 
         if (template) {
             this.updateTemplate(template);
         }
 
+        this.index = this.getIndexByInputStrAndData(data, str);
+
         this.render().show();
 
+        this.updateViewByIndex(this.index);
+
         return this;
+    }
+
+    getIndexByInputStrAndData(data, str) {
+        for (let i = 0, l = data.length; i < l; i++) {
+            let item = this.parseDataItem(data[i]);
+            if (item.value == str) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    parseDataItem(item) {
+        let id = typeof item == 'object' && item['id'] ? item['id'] : '';
+        let replace = typeof item == 'object' ? (item['replace'] || '') : '';
+        let origin = typeof item == 'object' ? (item['origin'] || '') : (item || '');
+        let isReplace = replace.length == 0 ? false : true;
+        let value = isReplace ? replace : origin;
+        let datastr = encodeURIComponent(JSON.stringify(item));
+        return {id, replace, origin, isReplace, value, datastr};
     }
 
     updateViewByIndex(index) {
@@ -137,20 +187,30 @@ class ListView {
         this.hide();
         const tempIndex = +($item.attr('data-order'));
         this.index = tempIndex;
-        $(this).trigger('selectItem');
-    }
-
-    _mouseoverHandler($item) {
-        this.getAllItems().removeClass(this.HOVER_CLASSNAME);
-        $item.addClass(this.HOVER_CLASSNAME);
+        $(this).trigger('selectItem', {
+            id: $item.attr('data-id'),
+            data: JSON.parse(decodeURIComponent($item.attr('data-str')))
+        });
     }
 
     getIndexItem() {
-        return this.$('.' + this.itemClassName).eq(this.index);
+        const targetIndex = this.index < 0 ? 0 : this.index;
+        return this.$('.' + this.itemClassName).eq(targetIndex);
     }
 
     getAllItems() {
         return this.$('.' + this.itemClassName);
+    }
+
+    getCurrentItemAttr(key) {
+        let $currentItem = this.getIndexItem();
+        if ($currentItem.length == 0) {
+            return '';
+        }
+        if (key.indexOf('data-') != 0) {
+            key = 'data-' + key;
+        }
+        return $currentItem.attr(key);
     }
 
     hide() {
